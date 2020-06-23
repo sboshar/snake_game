@@ -1,7 +1,7 @@
 #make it so that you cant move in the oppsite direction, if going left cant go right etv
 import pygame
 import random
-import time
+#import time
 #initializes pygame modules
 pygame.init()
 white = (255, 255, 255)
