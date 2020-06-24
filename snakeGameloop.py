@@ -14,8 +14,8 @@ class snakeGame(object):
         self.PIXELHEIGHT = 500
 
         #dim of the board
-        self.xdim = 10
-        self.ydim = 10
+        self.xdim = 20
+        self.ydim = 20
         self.VELOCITY = 5
         self.block_size = self.PIXELWIDTH // self.xdim  
         #snake takes the coordniate pos not the pixel ones
@@ -39,7 +39,6 @@ class snakeGame(object):
          
     def run(self): 
         while not self.game_over:
-            print(self.snake)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.game_over = True
