@@ -1,44 +1,56 @@
 import random
+import numpy as np
 import pygame
 from snake import Snake
 #think about what defines a stat
 #make this should be more like snakEnv rather than board
 class Board:
-    def __init__(self, width, height, snake):
+    def __init__(self, r, c):
         #width and height refer to the number of squares
         #on the board, w * h = number of availPos
-        self.width = width
-        self.height = height
-        self.snake = snake
-        self.food = (random.randint(0, width - 1), random.randint(0, height - 1))
-        #self.board = np.zeros((self.width, self.height)) 
+        self.num_rows = r
+        self.num_cols = c
+        self.food = self.genRandFood() 
+        #self.board = 
         #self.board[self.food] = -1
 
+    def shape(self):
+        return (self.num_rows, self.num_cols)
+    
+    def genRandFood(self):
+        self.food = (random.randint(0, self.num_rows), random.randint(0, self.num_cols))
+        return self.food
+        
     def reset(self):
-        self.snake = Snake((self.width//2, self.height//2))
-        return self.snake
+        self.food = self.genRandFood()
 
-    def isTerminal(self, pos):
-        return pos[0] < 0 or pos[0] > self.width or \
-                pos[1] < 0 or pos[1] > self.height
+    #not sure if needed in here
+    def hitWall(self, pos):
+        print(pos)
+        return pos[0] < 0 or pos[0] >= self.num_cols or \
+                pos[1] < 0 or pos[1] >= self.num_rows
 
-    #returns next state, reward, done
-    def step(self, direction):
+    def printBoard(self, snake=None):
+        b = []
+        for r in range(self.num_rows):
+            for c in range(self.num_cols):
+                s = (r,c)
+                if snake and s in snake.segments:
+                    b.append('s')
+                elif s == self.food:
+                    b.append('F')
+                else:
+                    b.append('☐')
+        print(np.array(b).reshape(self.num_rows, self.num_cols))
+
+    def render(self, win, block_size):
         pass
-
-    #def printBoard(self, isFull=False):
-    #    if isFull:
-    #        np.set_printoptions(threshold=sys.maxsize)
-        #print(self.board)
-
-    #def drawSnake(self):
-    #    for i in self.snake.getSegments():
-    #        self.board[i] = 1
-
-
+        
 if __name__ == "__main__":
-    boardX = 10
-    boardY = 10
-    snake = Snake((5,5))
-    b = Board(boardX, boardY, snake)
-
+    board_rows = 20
+    board_cols = 10
+    #snake(colpos/x, rowpos/y)
+    s = Snake((5,8))
+    b = Board(board_rows, board_cols)
+    b.food = (1, 8)
+    b.printBoard(s)

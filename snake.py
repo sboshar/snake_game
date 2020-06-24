@@ -17,12 +17,16 @@ class Snake(object):
     #init a snake in the middle, length three
     #moving downward
     def __init__(self, startPos):
-        self.direction = None
+        #start out going down
+        self.reset(startPos)
+
+    def reset(self, startPos):
+        self.collision = False
+        self.direction = (0, 1)
         self.alive = True
         self.headPos = startPos
-        #just one segment long
-        tail = self.getNextHead((0, -2))
-        mid = self.getNextHead((0, -1))
+        tail = self.getNextHead((-2, 0))
+        mid = self.getNextHead((-1, 0))
         #head is at the end of the list
         self.segments = deque()
         self.segments.append(tail)
@@ -56,17 +60,20 @@ class Snake(object):
     
     def getNextHead(self, d):
         return (self.headPos[0] + d[0], self.headPos[1] + d[1])
+
+    def hitSelf(self):
+        return self.head
     #adds direction to
     #should the check for food be in the main class,
     # seems a little weird we pass food into snake move
-    def move(self, food):
-        if self.direction:
-            #set the next head pos
-            self.setHeadPos(self.getNextHead(self.direction))
-            #add the head to the front of the queue
-            self.segments.append(self.headPos)
-            if self.headPos != food:
-                _ = self.removeTail()
+    def move(self):
+        #set the next head pos
+        nextHead = self.getNextHead(self.direction)
+        if nextHead in self.segments:
+            self.collision = True
+        self.setHeadPos(nextHead)
+        #add the head to the front of the queue
+        self.segments.append(self.headPos) 
     
     def render(self, win, block_size, color, head_color):
         for seg in self.segments:
@@ -82,20 +89,20 @@ if __name__ == "__main__":
     pygame.init()
     WIDTH = 500
     HEIGHT = 500
-    VELOCITY = 5
-    block_size = 10
+    block_size = 50
     win = pygame.display.set_mode((WIDTH, HEIGHT))
-    s = Snake((10, 10))
+    s = Snake((8,2))
     g = False
     while not g:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 g = True
             if event.type == pygame.KEYDOWN:
-                print(s)
-                s.move((0,0))
+                print(s.headPos)
+                s.move()
+                s.removeTail()
             win.fill((0,0,0))
-            s.render(win, 10, (0, 255, 0))
+            s.render(win, block_size, (0, 255, 0), (20, 160, 30))
             pygame.display.update()
     #pygame.init()
     #window = pygame.display.set_mode((400,400))
